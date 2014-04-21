@@ -24,7 +24,7 @@ var pipeline = cascade(function(chunk, add, next){
 	next()
 })
 
-var sink = through(function(chunk, enc, cb){
+var sink = through.obj(function(chunk, enc, cb){
 	console.log(chunk);
 	cb()
 })

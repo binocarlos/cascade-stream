@@ -16,9 +16,6 @@ var factory = module.exports = function(opts, fn){
 		fn(chunk, addStream, cb)
 	}, function(){
 
-		console.log('-------------------------------------------');
-		console.log('FDINISHG');
-
 		if(Object.keys(streams).length<=0){
 			output.push(null)
 		}

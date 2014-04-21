@@ -10,24 +10,32 @@ var factory = module.exports = function(opts, fn){
 
 	var streamsOpen = 0
 
+	var output = through(opts)
 	var input = through(opts, function(chunk, enc, cb){
 		fn(chunk, addStream, cb)
+	}, function(){
+		if(streamsOpen<=0){
+			output.push(null)
+		}
 	})
 
-	var output = through(opts)
+	function removeStream(){
+		streamsOpen--
+		if(streamsOpen<=0){
+			output.push(null)
+		}
+	}
 
 	function addStream(stream){
 		streamsOpen++
-
 		stream.pipe(through(opts, function(chunk, enc, cb){
-			output.push(chunk)
+			output.push(chunk, enc, cb)
 			cb()
 		}, function(){
-			streamsOpen--
-			if(streamsOpen<=0){
-				output.push(null)
-			}
+			removeStream()
 		}))
+
+		return stream
 	}
 
 	return duplexer(input, output, {

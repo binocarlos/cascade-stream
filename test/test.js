@@ -76,3 +76,57 @@ test('cascade streams from single input in normal mode', function(t) {
 
   source.pipe(trigger).pipe(sink)
 })
+
+
+test('finish even with no output', function(t) {
+
+  // create a stream for a single letter
+  function createLetterStream(letter){
+    return from.obj([].map(function(num){
+      return letter + ':' + num
+    }))
+  }
+
+  var source = from(['a', 'b', 'c'])
+
+  var trigger = cascade(function(chunk, add, next){
+    add(createLetterStream(chunk))
+    next()
+  })
+
+  var arr = []
+  var sink = through(function(chunk, enc, cb){
+    arr.push(chunk)
+    cb()
+  }, function(){
+    t.equal(arr.length, 0)
+    
+
+    t.end()
+  })
+
+  source.pipe(trigger).pipe(sink)
+})
+
+
+test('finish even with no streams', function(t) {
+
+  var source = from(['a', 'b', 'c'])
+
+  var trigger = cascade(function(chunk, add, next){
+    next()
+  })
+
+  var arr = []
+  var sink = through(function(chunk, enc, cb){
+    arr.push(chunk)
+    cb()
+  }, function(){
+    t.equal(arr.length, 0)
+    
+
+    t.end()
+  })
+
+  source.pipe(trigger).pipe(sink)
+})

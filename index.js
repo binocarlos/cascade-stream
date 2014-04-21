@@ -8,34 +8,50 @@ var factory = module.exports = function(opts, fn){
 		opts = {}
 	}
 
-	var streamsOpen = 0
+	var id = 0
+	var streams = {}
 
 	var output = through(opts)
 	var input = through(opts, function(chunk, enc, cb){
 		fn(chunk, addStream, cb)
 	}, function(){
-		if(streamsOpen<=0){
+
+		if(Object.keys(streams).length<=0){
 			output.push(null)
+		}
+		else{
+			Object.keys(streams).forEach(function(sid){
+				var s = streams[sid]
+				if(s.end){
+					s.end()	
+				}
+			})
 		}
 	})
 
-	function removeStream(){
-		streamsOpen--
-		if(streamsOpen<=0){
+	function removeStream(sid){
+		delete(streams[sid])
+		if(Object.keys(streams).length<=0){
 			output.push(null)
+			streams = []
 		}
 	}
 
 	function addStream(stream){
-		streamsOpen++
-		stream.pipe(through(opts, function(chunk, enc, cb){
+		var sid = id
+		id++
+
+		var wrapper = stream.pipe(through(opts, function(chunk, enc, cb){
 			output.push(chunk, enc, cb)
 			cb()
 		}, function(){
-			removeStream()
+			removeStream(sid)
 		}))
 
-		return stream
+		streams[sid] = wrapper
+		
+
+		return wrapper
 	}
 
 	return duplexer(input, output, {

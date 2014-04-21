@@ -33,7 +33,7 @@ var factory = module.exports = function(opts, fn){
 		delete(streams[sid])
 		if(Object.keys(streams).length<=0){
 			output.push(null)
-			streams = []
+			streams = null
 		}
 	}
 

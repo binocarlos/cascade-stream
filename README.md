@@ -1,6 +1,10 @@
 cascade-stream
 ==============
 
+[![NPM](https://nodei.co/npm/cascade-stream.png?global=true)](https://nodei.co/npm/cascade-stream/)
+
+[![Travis](http://img.shields.io/travis/binocarlos/cascade-stream.svg?style=flat)](https://travis-ci.org/binocarlos/cascade-stream)
+
 A duplex stream that can lazily create child streams from a chunk and merge all outputs into one
 
 ## example

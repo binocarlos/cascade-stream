@@ -57,9 +57,13 @@ var factory = module.exports = function(opts, fn){
 		return wrapper
 	}
 
-	return duplexer(input, output, {
+	var cascade = duplexer(input, output, {
 		objectMode:true
 	})
+
+	cascade.add = addStream
+
+	return cascade
 }
 
 factory.obj = function(fn){

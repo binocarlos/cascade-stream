@@ -16,6 +16,9 @@ var factory = module.exports = function(opts, fn){
 		fn(chunk, addStream, cb)
 	}, function(){
 
+		console.log('-------------------------------------------');
+		console.log('FDINISHG');
+
 		if(Object.keys(streams).length<=0){
 			output.push(null)
 		}
@@ -45,6 +48,9 @@ var factory = module.exports = function(opts, fn){
 			output.push(chunk, enc, cb)
 			cb()
 		}, function(){
+			if(stream.end){
+				stream.end()	
+			}
 			removeStream(sid)
 		}))
 

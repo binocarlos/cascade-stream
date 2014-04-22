@@ -1,9 +1,10 @@
 var through = require('through2')
 var duplexer = require('reduplexer')
 
-var factory = module.exports = function(opts, fn){
+var factory = module.exports = function(opts, fn, finishfn){
 
 	if(typeof(opts)==='function'){
+		finishfn = fn
 		fn = opts
 		opts = {}
 	}
@@ -16,8 +17,9 @@ var factory = module.exports = function(opts, fn){
 		fn(chunk, addStream, cb)
 	}, function(){
 
+		finishfn && finishfn()
 		removeStream(1)
-
+		
 	})
 
 	id++
@@ -60,7 +62,7 @@ var factory = module.exports = function(opts, fn){
 	return cascade
 }
 
-factory.obj = function(fn){
+factory.obj = function(fn, finishfn){
 	return factory({
 		objectMode:true
 	}, fn)

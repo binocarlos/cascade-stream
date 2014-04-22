@@ -229,3 +229,66 @@ test('wait for inner streams to finish before triggering the end', function(t) {
 
   source.pipe(trigger).pipe(sink)
 })
+
+
+
+test('trigger a function when the input has finished', function(t) {
+
+  function createDelayStream(letter){
+    var counter = 0;
+    return fnfrom(function(size, next){
+      setTimeout(function(){
+        counter++
+        if(counter<=3){
+          next(null, letter + counter)
+        }
+        else{
+          next()
+        }  
+      },100)
+      
+    })
+  }
+
+  var source = from(['a', 'b', 'c'])
+
+  var trigger = cascade(function(chunk, add, next){
+    add(createDelayStream(chunk))
+    next()
+  }, function(){
+    // the input should have finished before we have written any output
+    t.equal(arr.length, 0)
+  })
+
+  var arr = []
+  var sink = through(function(chunk, enc, cb){
+    arr.push(chunk)
+    cb()
+  }, function(){
+    
+    arr = arr.map(function(a){
+      return a.toString()
+    })
+
+    arr.sort()
+
+    t.equal(arr.length, 9)
+
+    t.deepEqual(arr, [
+      'a1',
+      'a2',
+      'a3',
+      'b1',
+      'b2',
+      'b3',
+      'c1',
+      'c2',
+      'c3'
+    ])
+    
+
+    t.end()
+  })
+
+  source.pipe(trigger).pipe(sink)
+})

@@ -16,18 +16,12 @@ var factory = module.exports = function(opts, fn){
 		fn(chunk, addStream, cb)
 	}, function(){
 
-		if(Object.keys(streams).length<=0){
-			output.push(null)
-		}
-		else{
-			Object.keys(streams).forEach(function(sid){
-				var s = streams[sid]
-				if(s.end){
-					s.end()	
-				}
-			})
-		}
+		removeStream(1)
+
 	})
+
+	id++
+	streams[id] = input
 
 	function removeStream(sid){
 		delete(streams[sid])
@@ -38,9 +32,9 @@ var factory = module.exports = function(opts, fn){
 	}
 
 	function addStream(stream){
-		var sid = id
 		id++
-
+		var sid = id
+		
 		var wrapper = stream.pipe(through(opts, function(chunk, enc, cb){
 			output.push(chunk, enc, cb)
 			cb()
@@ -51,7 +45,7 @@ var factory = module.exports = function(opts, fn){
 			removeStream(sid)
 		}))
 
-		streams[sid] = wrapper
+		streams[sid] = stream
 		
 
 		return wrapper

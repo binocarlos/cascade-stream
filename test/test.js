@@ -207,9 +207,21 @@ test('wait for inner streams to finish before triggering the end', function(t) {
       return a.toString()
     })
 
-    console.dir(arr);
+    arr.sort()
 
-    t.equal(arr.length, 12)
+    t.equal(arr.length, 9)
+
+    t.deepEqual(arr, [
+      'a1',
+      'a2',
+      'a3',
+      'b1',
+      'b2',
+      'b3',
+      'c1',
+      'c2',
+      'c3'
+    ])
     
 
     t.end()

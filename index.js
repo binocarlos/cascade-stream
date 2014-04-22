@@ -26,7 +26,7 @@ var factory = module.exports = function(opts, fn){
 	function removeStream(sid){
 		delete(streams[sid])
 		if(Object.keys(streams).length<=0){
-			output.push(null)
+			output.end()
 			streams = null
 		}
 	}
@@ -36,11 +36,11 @@ var factory = module.exports = function(opts, fn){
 		var sid = id
 		
 		var wrapper = stream.pipe(through(opts, function(chunk, enc, cb){
-			output.push(chunk, enc, cb)
+			output.write(chunk)
 			cb()
 		}, function(){
 			if(stream.end){
-				stream.end()	
+				stream.end()
 			}
 			removeStream(sid)
 		}))

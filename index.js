@@ -28,7 +28,7 @@ var factory = module.exports = function(opts, fn, finishfn){
 	function removeStream(sid){
 		delete(streams[sid])
 		if(Object.keys(streams).length<=0){
-			output.end()
+			output.push()
 			streams = null
 		}
 	}
@@ -36,21 +36,13 @@ var factory = module.exports = function(opts, fn, finishfn){
 	function addStream(stream){
 		id++
 		var sid = id
-		
-		var wrapper = stream.pipe(through(opts, function(chunk, enc, cb){
-			output.write(chunk)
-			cb()
-		}, function(){
-			if(stream.end){
-				stream.end()
-			}
+
+		stream.pipe(output, {end:false})
+		stream.on('end', function(){
 			removeStream(sid)
-		}))
-
+		})
+	
 		streams[sid] = stream
-		
-
-		return wrapper
 	}
 
 	var cascade = duplexer(input, output, {

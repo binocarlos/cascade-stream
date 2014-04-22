@@ -25,7 +25,8 @@
   "homepage": "https://github.com/binocarlos/cascade-stream",
   "devDependencies": {
     "tape": "^2.12.3",
-    "from2-array": "0.0.2"
+    "from2-array": "0.0.2",
+    "from2": "0.0.0"
   },
   "dependencies": {
     "through2": "^0.4.1",

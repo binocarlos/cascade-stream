@@ -231,7 +231,6 @@ test('wait for inner streams to finish before triggering the end', function(t) {
 })
 
 
-
 test('trigger a function when the input has finished', function(t) {
 
   function createDelayStream(letter){

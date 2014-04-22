@@ -57,5 +57,5 @@ var factory = module.exports = function(opts, fn, finishfn){
 factory.obj = function(fn, finishfn){
 	return factory({
 		objectMode:true
-	}, fn)
+	}, fn, finishfn)
 }

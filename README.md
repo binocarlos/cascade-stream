@@ -33,6 +33,7 @@ var sink = through.obj(function(chunk, enc, cb){
 	cb()
 })
 
+source.pipe(pipeline).pipe(sink)
 /*
 
 	a1
